@@ -6,6 +6,7 @@ A fully-fledged WhatsApp web client that is easy to host and has all required fu
 
 - **[Quick Start Guide](QUICKSTART.md)** - Get up and running in minutes
 - **[Features](FEATURES.md)** - Complete list of features and capabilities
+- **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
 - **[Contributing](CONTRIBUTING.md)** - Guidelines for contributing to the project
 
 ## Features
@@ -42,6 +43,38 @@ A fully-fledged WhatsApp web client that is easy to host and has all required fu
 ## Installation
 
 ### Method 1: Standard Node.js Setup
+
+**Prerequisites:**
+- Node.js 18 or higher
+- npm or yarn
+- System dependencies for Chromium (see below)
+
+**Step 1: Install System Dependencies (Required for Puppeteer)**
+
+The application uses Puppeteer which requires certain system libraries.
+
+**Option A: Using the provided script (Debian/Ubuntu/Codespaces):**
+```bash
+git clone https://github.com/QuizzityMC/Whatsapp-Web.git
+cd Whatsapp-Web
+chmod +x install-dependencies.sh
+sudo ./install-dependencies.sh
+```
+
+**Option B: Manual installation (Debian/Ubuntu):**
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+    ca-certificates fonts-liberation libappindicator3-1 \
+    libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 \
+    libdbus-1-3 libgbm1 libgtk-3-0 libnspr4 libnss3 \
+    libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+    xdg-utils wget
+```
+
+For other operating systems, see the [Puppeteer troubleshooting guide](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md).
+
+**Step 2: Install and Run**
 
 1. Clone the repository:
 ```bash
@@ -156,6 +189,28 @@ These directories are automatically created and are excluded from git via `.giti
 When using Docker, these directories are mounted as volumes to ensure your session persists across container restarts.
 
 ## Troubleshooting
+
+### Puppeteer/Chromium Errors
+
+**Error: "Failed to launch the browser process" or "libatk-1.0.so.0: cannot open shared object file"**
+
+This means your system is missing required libraries for Chromium to run.
+
+**Solution 1: Install system dependencies**
+```bash
+# Using the provided script
+chmod +x install-dependencies.sh
+sudo ./install-dependencies.sh
+
+# Then restart the application
+npm start
+```
+
+**Solution 2: Use Docker (recommended)**
+```bash
+docker-compose up -d
+```
+Docker includes all dependencies automatically and is the easiest way to avoid these issues.
 
 ### QR Code Not Appearing
 

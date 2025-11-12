@@ -18,29 +18,52 @@ Choose one of the following methods:
 
 ### Using Node.js
 
-1. **Clone and install:**
+1. **Install system dependencies (first time only):**
+   
+   The application requires certain system libraries for Puppeteer/Chromium to work.
+   
+   **Quick install (Debian/Ubuntu/Codespaces):**
+   ```bash
+   git clone https://github.com/QuizzityMC/Whatsapp-Web.git
+   cd Whatsapp-Web
+   chmod +x install-dependencies.sh
+   sudo ./install-dependencies.sh
+   ```
+   
+   **Manual install (Debian/Ubuntu):**
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y \
+       ca-certificates fonts-liberation libappindicator3-1 \
+       libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 \
+       libdbus-1-3 libgbm1 libgtk-3-0 libnspr4 libnss3 \
+       libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+       xdg-utils wget
+   ```
+
+2. **Clone and install:**
    ```bash
    git clone https://github.com/QuizzityMC/Whatsapp-Web.git
    cd Whatsapp-Web
    npm install
    ```
 
-2. **Start the server:**
+3. **Start the server:**
    ```bash
    npm start
    ```
 
-3. **Open your browser:**
+4. **Open your browser:**
    - Navigate to http://localhost:3000
    - You should see a QR code
 
-4. **Connect WhatsApp:**
+5. **Connect WhatsApp:**
    - Open WhatsApp on your phone
    - Go to Settings → Linked Devices
    - Tap "Link a Device"
    - Scan the QR code
 
-5. **Start chatting!**
+6. **Start chatting!**
    - Once connected, you'll see all your chats
    - Click on any chat to start messaging
 
@@ -82,6 +105,37 @@ docker-compose down -v
 ```
 
 ## Troubleshooting
+
+### Puppeteer/Chromium Issues
+
+**Error: "libatk-1.0.so.0: cannot open shared object file"**
+
+This means your system is missing required libraries for Chromium. Fix it by:
+
+1. **Using the install script (recommended):**
+   ```bash
+   chmod +x install-dependencies.sh
+   sudo ./install-dependencies.sh
+   npm install
+   npm start
+   ```
+
+2. **Manual installation (Debian/Ubuntu/Codespaces):**
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y \
+       ca-certificates fonts-liberation libappindicator3-1 \
+       libasound2 libatk-bridge2.0-0 libatk1.0-0 libcups2 \
+       libdbus-1-3 libgbm1 libgtk-3-0 libnspr4 libnss3 \
+       libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+       xdg-utils wget
+   ```
+
+3. **If still having issues, use Docker instead:**
+   ```bash
+   docker-compose up -d
+   ```
+   Docker includes all dependencies automatically.
 
 ### Port Already in Use
 If port 3000 is already in use, you can change it:
