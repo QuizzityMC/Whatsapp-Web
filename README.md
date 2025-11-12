@@ -2,6 +2,12 @@
 
 A fully-fledged WhatsApp web client that is easy to host and has all required functions. This application provides a clean, modern interface to interact with WhatsApp using the whatsapp-web.js library.
 
+## 📚 Documentation
+
+- **[Quick Start Guide](QUICKSTART.md)** - Get up and running in minutes
+- **[Features](FEATURES.md)** - Complete list of features and capabilities
+- **[Contributing](CONTRIBUTING.md)** - Guidelines for contributing to the project
+
 ## Features
 
 ✅ **Complete WhatsApp Integration**
