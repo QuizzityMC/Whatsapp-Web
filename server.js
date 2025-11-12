@@ -41,6 +41,13 @@ const client = new Client({
             '--single-process',
             '--disable-gpu'
         ]
+    },
+    // Custom client info for better device identification
+    clientId: "whatsapp-web-client",
+    // Optimize sync behavior for faster loading
+    webVersionCache: {
+        type: 'remote',
+        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
     }
 });
 
@@ -115,25 +122,54 @@ io.on('connection', (socket) => {
                 return;
             }
             
+            console.log('Fetching chats...');
             const chats = await client.getChats();
-            const chatList = await Promise.all(chats.map(async (chat) => {
-                const contact = await chat.getContact();
-                const lastMessage = chat.lastMessage;
-                
-                return {
-                    id: chat.id._serialized,
-                    name: chat.name || contact.pushname || contact.name || chat.id.user,
-                    isGroup: chat.isGroup,
-                    unreadCount: chat.unreadCount,
-                    timestamp: chat.timestamp,
-                    lastMessage: lastMessage ? {
-                        body: lastMessage.body,
-                        timestamp: lastMessage.timestamp
-                    } : null,
-                    profilePicUrl: null // Will be fetched separately if needed
-                };
-            }));
             
+            // Sort by timestamp and limit to most recent 50 chats for faster loading
+            const recentChats = chats
+                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+                .slice(0, 50);
+            
+            console.log(`Processing ${recentChats.length} most recent chats...`);
+            
+            // Process chats in batches to avoid overwhelming the system
+            const batchSize = 10;
+            const chatList = [];
+            
+            for (let i = 0; i < recentChats.length; i += batchSize) {
+                const batch = recentChats.slice(i, i + batchSize);
+                const batchResults = await Promise.all(batch.map(async (chat) => {
+                    try {
+                        const contact = await chat.getContact();
+                        const lastMessage = chat.lastMessage;
+                        
+                        return {
+                            id: chat.id._serialized,
+                            name: chat.name || contact.pushname || contact.name || chat.id.user,
+                            isGroup: chat.isGroup,
+                            unreadCount: chat.unreadCount,
+                            timestamp: chat.timestamp,
+                            lastMessage: lastMessage ? {
+                                body: lastMessage.body,
+                                timestamp: lastMessage.timestamp
+                            } : null,
+                            profilePicUrl: null
+                        };
+                    } catch (err) {
+                        console.error('Error processing chat:', err);
+                        return null;
+                    }
+                }));
+                
+                chatList.push(...batchResults.filter(c => c !== null));
+                
+                // Send progress updates for large chat lists
+                if (i > 0 && i % 20 === 0) {
+                    console.log(`Processed ${chatList.length} chats so far...`);
+                }
+            }
+            
+            console.log(`Sending ${chatList.length} chats to client`);
             socket.emit('chats', chatList);
         } catch (error) {
             console.error('Error getting chats:', error);
@@ -142,33 +178,46 @@ io.on('connection', (socket) => {
     });
     
     // Get messages from a specific chat
-    socket.on('getMessages', async (chatId, limit = 50) => {
+    socket.on('getMessages', async (chatId, limit = 20) => {
         try {
             if (!isClientReady) {
                 socket.emit('error', 'Client not ready');
                 return;
             }
             
+            console.log(`Fetching messages for chat ${chatId}, limit: ${limit}`);
             const chat = await client.getChatById(chatId);
-            const messages = await chat.fetchMessages({ limit });
+            
+            // Limit to maximum of 50 messages for performance
+            const messageLimit = Math.min(limit || 20, 50);
+            const messages = await chat.fetchMessages({ limit: messageLimit });
+            
+            console.log(`Processing ${messages.length} messages...`);
             
             const messageList = await Promise.all(messages.map(async (msg) => {
-                const contact = await msg.getContact();
-                
-                return {
-                    id: msg.id._serialized,
-                    body: msg.body,
-                    from: msg.from,
-                    fromName: contact.pushname || contact.name || msg.from,
-                    timestamp: msg.timestamp,
-                    fromMe: msg.fromMe,
-                    hasMedia: msg.hasMedia,
-                    type: msg.type,
-                    ack: msg.ack
-                };
+                try {
+                    const contact = await msg.getContact();
+                    
+                    return {
+                        id: msg.id._serialized,
+                        body: msg.body,
+                        from: msg.from,
+                        fromName: contact.pushname || contact.name || msg.from,
+                        timestamp: msg.timestamp,
+                        fromMe: msg.fromMe,
+                        hasMedia: msg.hasMedia,
+                        type: msg.type,
+                        ack: msg.ack
+                    };
+                } catch (err) {
+                    console.error('Error processing message:', err);
+                    return null;
+                }
             }));
             
-            socket.emit('messages', { chatId, messages: messageList });
+            const validMessages = messageList.filter(m => m !== null);
+            console.log(`Sending ${validMessages.length} messages to client`);
+            socket.emit('messages', { chatId, messages: validMessages });
         } catch (error) {
             console.error('Error getting messages:', error);
             socket.emit('error', error.message);

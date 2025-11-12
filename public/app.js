@@ -49,7 +49,13 @@ socket.on('disconnect', () => {
 
 socket.on('qr', (qrData) => {
     console.log('QR code received');
-    qrCodeContainer.innerHTML = `<img src="${qrData}" alt="QR Code">`;
+    qrCodeContainer.innerHTML = `
+        <img src="${qrData}" alt="QR Code">
+        <p style="margin-top: 15px; color: #667781; font-size: 14px;">
+            If login is stuck, ensure your phone has internet access.<br>
+            If on restricted WiFi, this may take longer or fail.
+        </p>
+    `;
     updateConnectionStatus('waiting', 'Scan QR Code');
 });
 
@@ -89,6 +95,7 @@ socket.on('chats', (chatList) => {
     console.log('Chats received:', chatList.length);
     chats = chatList.sort((a, b) => b.timestamp - a.timestamp);
     renderChatList(chats);
+    updateConnectionStatus('connected', 'Connected');
 });
 
 socket.on('messages', (data) => {
@@ -140,6 +147,8 @@ socket.on('error', (error) => {
 
 // Load chats
 function loadChats() {
+    chatList.innerHTML = '<div class="loading">Loading chats...</div>';
+    updateConnectionStatus('loading', 'Loading chats...');
     socket.emit('getChats');
 }
 
@@ -209,8 +218,11 @@ function openChat(chatId) {
     welcomeScreen.style.display = 'none';
     activeChatDiv.style.display = 'flex';
     
-    // Load messages
-    socket.emit('getMessages', chatId, 50);
+    // Show loading state
+    messagesContainer.innerHTML = '<div class="loading">Loading messages...</div>';
+    
+    // Load messages with reduced limit for faster loading
+    socket.emit('getMessages', chatId, 20);
 }
 
 // Render messages

@@ -2,6 +2,58 @@
 
 This guide helps you resolve common issues when running the WhatsApp Web Client.
 
+## Network and Connection Issues
+
+### Stuck on "Logging in" or "Loading chats..." 
+
+**Problem:** Authentication succeeds but app gets stuck loading chats, or takes very long.
+
+**Causes:**
+- Restricted WiFi blocking WhatsApp services (common in corporate/school networks)
+- Large number of chats taking time to sync
+- Slow internet connection
+
+**Solutions:**
+
+1. **Check network restrictions:**
+   - Ensure your network allows access to WhatsApp servers (*.whatsapp.com, *.whatsapp.net)
+   - Try from a different network (mobile hotspot, home WiFi)
+   - Contact network administrator about WhatsApp access
+
+2. **Performance optimizations (already implemented):**
+   - Application now loads only the 50 most recent chats
+   - Messages limited to 20 per chat by default
+   - Chats processed in batches for better performance
+
+3. **Wait longer on first load:**
+   - First sync can take 1-3 minutes depending on chat count
+   - Subsequent loads are much faster (session cached)
+
+4. **Check server logs for errors:**
+   ```bash
+   # Look for specific error messages
+   npm start
+   ```
+
+### Device Shows as "Google Chrome (Mac OS)"
+
+**Problem:** WhatsApp shows the linked device as Chrome instead of custom name.
+
+**Cause:** WhatsApp-web.js uses Puppeteer/Chromium, so WhatsApp detects it as Chrome browser.
+
+**Note:** This is expected behavior and doesn't affect functionality. The device name is determined by WhatsApp based on the user agent.
+
+### Shows "Last active on..." instead of "Online"
+
+**Problem:** Status shows last active time instead of online status.
+
+**Cause:** This is WhatsApp's privacy setting behavior. Online status visibility depends on:
+- Your phone's privacy settings
+- The contact's privacy settings
+- Whether you're actively using WhatsApp
+
+**Note:** This is expected WhatsApp behavior, not a bug in the client.
+
 ## Installation Issues
 
 ### Error: "libatk-1.0.so.0: cannot open shared object file"

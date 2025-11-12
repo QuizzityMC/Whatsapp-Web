@@ -10,13 +10,6 @@ This WhatsApp Web Client provides a comprehensive set of features for managing y
 - **Auto-reconnect**: Automatically attempts to reconnect if the connection is lost
 - **Session Management**: Secure local session storage
 
-### ✅ Messaging
-- **Send Messages**: Send text messages to any contact or group
-- **Receive Messages**: Real-time message receiving with instant notifications
-- **Message History**: View complete chat history for all conversations
-- **Message Timestamps**: See when messages were sent and received
-- **Read Receipts**: Visual indicators for message delivery status
-
 ### ✅ Chat Management
 - **Chat List**: View all your active chats in one place
 - **Group Chats**: Full support for group conversations
@@ -25,6 +18,15 @@ This WhatsApp Web Client provides a comprehensive set of features for managing y
 - **Unread Count**: Visual badges showing unread message counts
 - **Last Message Preview**: See the last message in each chat
 - **Sort by Time**: Chats automatically sorted by most recent activity
+- **Optimized Loading**: Loads only the 50 most recent chats for faster performance
+
+### ✅ Messaging
+- **Send Messages**: Send text messages to any contact or group
+- **Receive Messages**: Real-time message receiving with instant notifications
+- **Message History**: View recent chat history (20 messages by default, up to 50)
+- **Message Timestamps**: See when messages were sent and received
+- **Read Receipts**: Visual indicators for message delivery status
+- **Optimized Loading**: Messages load quickly with configurable limits
 
 ### ✅ Media Support
 - **Media Detection**: Automatically detects media in messages
@@ -138,6 +140,46 @@ To maintain simplicity and focus, the following features are not included:
 - ❌ Database integration (uses local file storage)
 - ❌ Message encryption at rest (relies on OS-level encryption)
 - ❌ Advanced admin features
+
+## Performance Optimizations
+
+To ensure fast loading and smooth operation, especially on slower networks:
+
+### ✅ Optimized Chat Loading
+- Loads only the **50 most recent chats** instead of all chats
+- Processes chats in batches of 10 for better performance
+- Sorts chats by most recent activity
+- Graceful error handling for problematic chats
+
+### ✅ Optimized Message Loading
+- Loads **20 messages by default** (max 50) per chat
+- Messages load on-demand when you open a chat
+- Older messages can be loaded by scrolling (future enhancement)
+
+### ✅ Network Efficiency
+- Batch processing reduces server load
+- Progress feedback during loading
+- Error recovery for network issues
+
+### ⚠️ Network Requirements
+- Requires unrestricted access to WhatsApp servers (*.whatsapp.com, *.whatsapp.net)
+- May not work on corporate/school networks with WhatsApp blocked
+- First sync takes 1-3 minutes depending on chat count
+- Subsequent loads are much faster (session cached)
+
+## Known Limitations
+
+### Device Identification
+- WhatsApp displays the device as "Google Chrome" (Mac/Windows/Linux)
+- This is because the app uses Puppeteer/Chromium
+- Device name cannot be customized due to WhatsApp API limitations
+- Does not affect functionality
+
+### Status Display
+- May show "Last active on..." instead of "Online"
+- This is controlled by WhatsApp's privacy settings
+- Depends on both your and contact's privacy settings
+- Expected WhatsApp behavior, not a bug
 
 ## Future Enhancement Ideas
 

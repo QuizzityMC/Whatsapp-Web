@@ -35,6 +35,7 @@ A fully-fledged WhatsApp web client that is easy to host and has all required fu
 - Node.js 18 or higher
 - npm or yarn
 - Chrome/Chromium (automatically handled by Puppeteer)
+- **Unrestricted internet access** to WhatsApp servers (*.whatsapp.com, *.whatsapp.net)
 
 **OR**
 
