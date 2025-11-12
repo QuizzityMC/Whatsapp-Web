@@ -213,6 +213,25 @@ Whatsapp-Web/
 4. Consider implementing additional authentication before the QR code screen
 5. Keep your dependencies updated for security patches
 
+### Known Dependency Vulnerabilities
+
+The whatsapp-web.js library depends on an older version of Puppeteer which has some known vulnerabilities in its dependencies (tar-fs and ws). These vulnerabilities are:
+
+- **tar-fs**: Path traversal vulnerabilities when extracting tarballs (CVE related to tar file extraction)
+- **ws**: DoS vulnerability when handling requests with many HTTP headers
+
+**Impact Assessment**: These vulnerabilities have minimal impact on this application because:
+1. The tar-fs vulnerability only affects scenarios where untrusted tarballs are extracted, which doesn't occur in normal WhatsApp operations
+2. The ws vulnerability is a DoS issue that would require an attacker to send specially crafted WebSocket messages with many headers, which is mitigated by proper network configuration and rate limiting
+
+**Mitigation**: 
+- Deploy behind a reverse proxy with rate limiting
+- Use a firewall to restrict access
+- Keep the application in a containerized environment (Docker)
+- Monitor for unusual network activity
+
+The whatsapp-web.js maintainers are aware of these issues and are working on updates.
+
 ## Technologies Used
 
 - **Backend**: Node.js, Express.js

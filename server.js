@@ -267,6 +267,14 @@ app.get('/api/status', (req, res) => {
     });
 });
 
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Initialize WhatsApp client
 console.log('Initializing WhatsApp client...');
 client.initialize();
