@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  whatsapp-web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - whatsapp_auth:/app/.wwebjs_auth
+      - whatsapp_cache:/app/.wwebjs_cache
+    environment:
+      - PORT=3000
+    restart: unless-stopped
+    container_name: whatsapp-web-client
+
+volumes:
+  whatsapp_auth:
+  whatsapp_cache:

@@ -1,1 +1,239 @@
-# Whatsapp-Web
+# WhatsApp Web Client
+
+A fully-fledged WhatsApp web client that is easy to host and has all required functions. This application provides a clean, modern interface to interact with WhatsApp using the whatsapp-web.js library.
+
+## Features
+
+✅ **Complete WhatsApp Integration**
+- Send and receive messages in real-time
+- View all your chats and contacts
+- Support for individual and group chats
+- Message history viewing
+- Media support (images, videos, documents)
+
+✅ **Easy to Host**
+- Simple Node.js setup
+- Docker support for containerized deployment
+- Docker Compose for one-command startup
+- Persistent session storage
+
+✅ **Modern UI**
+- Clean, WhatsApp-like interface
+- Real-time updates via Socket.IO
+- Responsive design
+- Dark theme
+
+## Prerequisites
+
+- Node.js 18 or higher
+- npm or yarn
+- Chrome/Chromium (automatically handled by Puppeteer)
+
+**OR**
+
+- Docker and Docker Compose
+
+## Installation
+
+### Method 1: Standard Node.js Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/QuizzityMC/Whatsapp-Web.git
+cd Whatsapp-Web
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the application:
+```bash
+npm start
+```
+
+4. Open your browser and navigate to:
+```
+http://localhost:3000
+```
+
+### Method 2: Docker Setup (Recommended)
+
+1. Clone the repository:
+```bash
+git clone https://github.com/QuizzityMC/Whatsapp-Web.git
+cd Whatsapp-Web
+```
+
+2. Start with Docker Compose:
+```bash
+docker-compose up -d
+```
+
+3. Open your browser and navigate to:
+```
+http://localhost:3000
+```
+
+## Usage
+
+### First Time Setup
+
+1. When you first open the application, you'll see a QR code
+2. Open WhatsApp on your phone
+3. Go to Settings → Linked Devices
+4. Tap "Link a Device"
+5. Scan the QR code displayed in your browser
+
+### Using the Application
+
+Once connected, you can:
+
+- **View Chats**: All your chats appear in the left sidebar
+- **Search**: Use the search bar to find specific chats
+- **Send Messages**: Click on a chat, type your message, and press Enter or click the send button
+- **Receive Messages**: New messages appear in real-time
+- **Refresh**: Click the refresh button to update your chat list
+
+## Configuration
+
+### Environment Variables
+
+You can customize the application using environment variables:
+
+- `PORT`: The port the server runs on (default: 3000)
+
+Example:
+```bash
+PORT=8080 npm start
+```
+
+### Docker Environment
+
+When using Docker, modify the `docker-compose.yml` file to set environment variables:
+
+```yaml
+environment:
+  - PORT=8080
+```
+
+## Architecture
+
+The application consists of three main components:
+
+1. **Backend (server.js)**
+   - Express.js server
+   - WhatsApp client using whatsapp-web.js
+   - Socket.IO for real-time communication
+   - API endpoints for status checking
+
+2. **Frontend (public/)**
+   - HTML/CSS/JavaScript single-page application
+   - Socket.IO client for real-time updates
+   - Modern, responsive UI
+
+3. **Docker Configuration**
+   - Dockerfile for containerization
+   - Docker Compose for easy deployment
+   - Volume mounting for persistent sessions
+
+## Data Persistence
+
+The application stores WhatsApp session data in the following directories:
+
+- `.wwebjs_auth/` - Authentication data
+- `.wwebjs_cache/` - Cache data
+
+These directories are automatically created and are excluded from git via `.gitignore`.
+
+When using Docker, these directories are mounted as volumes to ensure your session persists across container restarts.
+
+## Troubleshooting
+
+### QR Code Not Appearing
+
+1. Check if the server is running properly
+2. Look at the server logs for any errors
+3. Ensure you have a stable internet connection
+4. Try refreshing the page
+
+### Connection Issues
+
+1. Check server logs for errors
+2. Ensure port 3000 (or your configured port) is not in use
+3. Verify your internet connection
+4. Try restarting the application
+
+### Session Lost
+
+If you lose your session:
+1. Delete the `.wwebjs_auth/` and `.wwebjs_cache/` directories
+2. Restart the application
+3. Scan the QR code again
+
+For Docker:
+```bash
+docker-compose down -v
+docker-compose up -d
+```
+
+## Development
+
+### Running in Development Mode
+
+```bash
+npm run dev
+```
+
+This uses nodemon to automatically restart the server when files change.
+
+### Project Structure
+
+```
+Whatsapp-Web/
+├── server.js           # Main server file
+├── package.json        # Dependencies and scripts
+├── Dockerfile          # Docker configuration
+├── docker-compose.yml  # Docker Compose configuration
+├── .gitignore         # Git ignore rules
+└── public/            # Frontend files
+    ├── index.html     # Main HTML file
+    ├── styles.css     # Styles
+    └── app.js         # Frontend JavaScript
+```
+
+## Security Notes
+
+⚠️ **Important Security Considerations:**
+
+1. **Do not expose this application directly to the internet** without proper authentication
+2. The session data in `.wwebjs_auth/` contains sensitive information - protect it
+3. Use a reverse proxy (like nginx) with SSL/TLS for production deployments
+4. Consider implementing additional authentication before the QR code screen
+5. Keep your dependencies updated for security patches
+
+## Technologies Used
+
+- **Backend**: Node.js, Express.js
+- **WhatsApp Integration**: whatsapp-web.js
+- **Real-time Communication**: Socket.IO
+- **QR Code Generation**: qrcode
+- **Frontend**: Vanilla JavaScript, HTML5, CSS3
+- **Containerization**: Docker, Docker Compose
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Disclaimer
+
+This project is not affiliated with, endorsed by, or connected to WhatsApp or Meta. It uses the unofficial whatsapp-web.js library. Use at your own risk and ensure compliance with WhatsApp's Terms of Service.
+
+## Support
+
+For issues, questions, or contributions, please visit the [GitHub repository](https://github.com/QuizzityMC/Whatsapp-Web).
